@@ -30,22 +30,25 @@ class App extends React.Component{
     const alpha = require('alphavantage')({ key: '08Q0YI6I3581QAAU' });
     alpha.data.daily(searchTerm.toString().toUpperCase())
     .then(response => {
+      console.log(response);
       console.log(response['Time Series (Daily)']);
 
       // Get todays most recent price
       var d = new Date();
 
       var date = `${d.getFullYear()}-${("0" + d.getMonth()).slice(-2)}-${("0" + d.getDay()).slice(-2)}`;
+      date = "2019-08-02"; // Todo remove this
+      console.log(date);
 
-      var data = response['Time Series (Daily)'][date];
-      console.log(data);
+      var stockData = response['Time Series (Daily)'][date];
+      console.log(stockData);
       this.setState({
         name: response['Meta Data']['2. Symbol'],
         data: {
-          open: data['1. open'],
-          close: data['2. high'],
-          high: data['3. low'],
-          low: data['4. close']
+          open: stockData['1. open'],
+          close: stockData['2. high'],
+          high: stockData['3. low'],
+          low: stockData['4. close']
         }
       });
       console.log(this.state.data);
@@ -65,39 +68,47 @@ class App extends React.Component{
 
 
   render(){
+    console.log("HERE");
+    // console.log(this.state.data)
+    // var card;
+    // card = this.state.data === {} ? '' : this.state.data;
     return(
       <div>
-      <Paper className='search-bar'>
-        <InputBase className='search-input'
-          placeholder='Search stocks'
-          onKeyPress={event => {
-            if(event.key === 'Enter') {
-              this.getValues(event.target.value)
-            }
+        <Paper className='search-bar'>
+          <InputBase className='search-input'
+            placeholder='Search stocks'
+            onKeyPress={event => {
+              if(event.key === 'Enter') {
+                this.getValues(event.target.value)
+              }
 
-          }}>
+            }}>
 
         </InputBase>
         <SearchIcon className='search-icon'/>
 
         </Paper>
 
-        <Card />
-
-        <Paper>
-          <h1>{this.state.name}</h1>
-          <div>
-            <p>Open: {this.state.data.open}</p>
-            <p>High: {this.state.data.high}</p>
-            <p>Low: {this.state.data.low}</p>
-            <p>Close: {this.state.data.close}</p>
-          </div>
-        </Paper>
-
-
+        <Card name={this.state.name}
+              open={this.state.data.open}
+              high={this.state.data.high}
+              low={this.state.data.low}
+              close={this.state.data.close}/>
       </div>
     )
   }
 }
 
 export default App;
+//   // <Card data={this.state.data.toString()}/>
+// {this.state.data}
+
+// <Paper>
+//   <h1>{this.state.name}</h1>
+//   <div>
+//     <p>Open: {this.state.data.open}</p>
+//     <p>High: {this.state.data.high}</p>
+//     <p>Low: {this.state.data.low}</p>
+//     <p>Close: {this.state.data.close}</p>
+//   </div>
+// </Paper>
