@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
 import Card from './card.js';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
-import IconButton from '@material-ui/core/IconButton';
+// import IconButton from '@material-ui/core/IconButton';
 
 
 class App extends React.Component{
@@ -15,6 +15,7 @@ class App extends React.Component{
       response: {},
       data: {},
       name: '',
+      img: ''
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,30 +29,31 @@ class App extends React.Component{
   getValues(searchTerm){
     // Todo -- set this to an environment variable
     const alpha = require('alphavantage')({ key: '08Q0YI6I3581QAAU' });
-    alpha.data.daily(searchTerm.toString().toUpperCase())
+    alpha.data.quote(searchTerm.toString().toUpperCase())
     .then(response => {
       console.log(response);
-      console.log(response['Time Series (Daily)']);
+      // console.log(response['Time Series (Daily)']);
 
       // Get todays most recent price
-      var d = new Date();
+      // var d = new Date();
+      //
+      // var date = `${d.getFullYear()}-${("0" + d.getMonth()).slice(-2)}-${("0" + d.getDay()).slice(-2)}`;
+      // date = "2019-08-02"; // Todo remove this
+      // console.log(date);
 
-      var date = `${d.getFullYear()}-${("0" + d.getMonth()).slice(-2)}-${("0" + d.getDay()).slice(-2)}`;
-      date = "2019-08-02"; // Todo remove this
-      console.log(date);
-
-      var stockData = response['Time Series (Daily)'][date];
-      console.log(stockData);
+      // var stockData = response['Time Series (Daily)'][date];
+      var stockData = response['Global Quote'];
       this.setState({
-        name: response['Meta Data']['2. Symbol'],
+        name: stockData['01. symbol'],
         data: {
-          open: stockData['1. open'],
-          close: stockData['2. high'],
-          high: stockData['3. low'],
-          low: stockData['4. close']
+          open: stockData['02. open'],
+          close: stockData['03. high'],
+          high: stockData['04. low'],
+          price: stockData['05. price']
         }
       });
-      console.log(this.state.data);
+      console.log(this.state);
+
     })
     .catch(err => {
         console.error(err);
@@ -68,7 +70,7 @@ class App extends React.Component{
 
 
   render(){
-    console.log("HERE");
+    console.log("Render app", this.state.name);
     // console.log(this.state.data)
     // var card;
     // card = this.state.data === {} ? '' : this.state.data;
@@ -93,7 +95,7 @@ class App extends React.Component{
               open={this.state.data.open}
               high={this.state.data.high}
               low={this.state.data.low}
-              close={this.state.data.close}/>
+              price={this.state.data.price}/>
       </div>
     )
   }

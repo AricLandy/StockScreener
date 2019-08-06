@@ -1,6 +1,8 @@
 
 .search-bar {
-  margin: 10px;
+  margin-top: 10px;
+  margin-left: 5vw;
+  margin-right: 5vw;
   height: 50px;
   display: 'flex';
   align-items: 'center';
@@ -19,6 +21,24 @@
   padding-left: 25px;
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+.card {
+  margin-top: 10px;
+  margin-left: 5vw;
+  margin-right: 5vw;
+  padding: 2%;
+  display: flex;
+  align: horizontal;
+  /* display: inline; */
+}
+.tick {
+  margin: 8px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.price {
+  float: right;
 }
 
 @keyframes App-logo-spin {
