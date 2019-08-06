@@ -12,10 +12,8 @@ class App extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      response: {},
-      data: {},
-      name: '',
-      img: ''
+      num_stocks: 0,
+      data: [],
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -43,15 +41,16 @@ class App extends React.Component{
 
       // var stockData = response['Time Series (Daily)'][date];
       var stockData = response['Global Quote'];
-      this.setState({
-        name: stockData['01. symbol'],
-        data: {
-          open: stockData['02. open'],
-          close: stockData['03. high'],
-          high: stockData['04. low'],
-          price: stockData['05. price']
-        }
+      var new_data = this.state.data.concat({
+        'name': stockData['01. symbol'],
+        'open': stockData['02. open'],
+        'close': stockData['03. high'],
+        'high': stockData['04. low'],
+        'price': stockData['05. price']
       });
+      this.setState({
+        data: new_data
+      })
       console.log(this.state);
 
     })
@@ -70,10 +69,18 @@ class App extends React.Component{
 
 
   render(){
-    console.log("Render app", this.state.name);
+    console.log("Render app", this.state.data);
     // console.log(this.state.data)
     // var card;
     // card = this.state.data === {} ? '' : this.state.data;
+    // var x = this.state.data.map((obj) => {
+    //   <Card name={obj.name}
+    //         open={obj.open}
+    //         high={obj.high}
+    //         low={obj.low}
+    //         price={obj.price}/>
+    // });
+    // console.log("X", x);
     return(
       <div>
         <Paper className='search-bar'>
@@ -91,11 +98,15 @@ class App extends React.Component{
 
         </Paper>
 
-        <Card name={this.state.name}
-              open={this.state.data.open}
-              high={this.state.data.high}
-              low={this.state.data.low}
-              price={this.state.data.price}/>
+        {this.state.data.map(obj =>
+          (<Card name={obj.name}
+                open={obj.open}
+                high={obj.high}
+                low={obj.low}
+                price={obj.price}/>),
+        )}
+
+
       </div>
     )
   }
@@ -104,7 +115,11 @@ class App extends React.Component{
 export default App;
 //   // <Card data={this.state.data.toString()}/>
 // {this.state.data}
-
+// <Card name={this.state.data[0].name}
+//       open={this.state.data[0].open}
+//       high={this.state.data[0].high}
+//       low={this.state.data[0].low}
+//       price={this.state.data[0].price}/>
 // <Paper>
 //   <h1>{this.state.name}</h1>
 //   <div>
