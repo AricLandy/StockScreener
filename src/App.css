@@ -1,6 +1,6 @@
 
 .search-bar {
-  margin-top: 10px;
+  margin-top: 12px;
   margin-left: 5vw;
   margin-right: 5vw;
   height: 50px;
@@ -39,6 +39,12 @@
 }
 .price {
   float: right;
+}
+
+.toast{
+  /* margin-left: 5vw;
+  margin-right: 5vw; */
+  background: black;
 }
 
 @keyframes App-logo-spin {

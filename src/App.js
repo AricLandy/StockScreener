@@ -5,6 +5,9 @@ import Card from './card.js';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { css } from 'glamor';
 // import IconButton from '@material-ui/core/IconButton';
 
 
@@ -16,7 +19,6 @@ class App extends React.Component{
       data: [],
     }
 
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.getValues = this.getValues.bind(this);
   }
 
@@ -39,7 +41,7 @@ class App extends React.Component{
     console.log('getvals');
     // Validate the Input
     if (!this.validate(searchTerm)){
-      window.alert("invalid input");
+      this._toast(`${searchTerm.toUpperCase()} has already been added`);
       return;
     }
 
@@ -69,13 +71,15 @@ class App extends React.Component{
     });
   }
 
-  handleSubmit(value){
-    console.log("Handle Submit", value);
-    this.setState({
-      name: value.toUpperCase(),
+  _toast(message){
+    toast(message,{
+      className: css({
+        background: 'black'
+      }),
     })
-    this.getValues();
   }
+
+
 
 
   render(){
@@ -105,6 +109,17 @@ class App extends React.Component{
                 low={obj.low}
                 price={obj.price}/>),
         )}
+
+        <ToastContainer position="bottom-center"
+          autoClose={5000}
+          hideProgressBar={true}
+          newestOnTop={true}
+          closeButton={false}
+          closeOnClick
+          rtl={false}
+          draggable
+          pauseOnHover
+          />
 
 
       </div>

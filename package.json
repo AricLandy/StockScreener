@@ -7,9 +7,11 @@
     "@material-ui/icons": "^4.2.1",
     "alpha-vantage-cli": "^1.0.8",
     "alphavantage": "^1.2.5",
+    "glamor": "^2.20.40",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "react-toastify": "^5.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
