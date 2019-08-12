@@ -21,23 +21,33 @@ class App extends React.Component{
   }
 
   // componentDidMount() {
-  //   this.nameInput.focus();
   // }
 
+  validate(term){
+    console.log('validate');
+
+    for(var i = 0; i < this.state.data.length; ++i){
+      console.log(this.state.data[i].name);
+      if (this.state.data[i].name === term.toString().toUpperCase()){
+        return false;
+      }
+    }
+    return true;
+  }
+
   getValues(searchTerm){
+    console.log('getvals');
+    // Validate the Input
+    if (!this.validate(searchTerm)){
+      window.alert("invalid input");
+      return;
+    }
+
     // Todo -- set this to an environment variable
     const alpha = require('alphavantage')({ key: '08Q0YI6I3581QAAU' });
     alpha.data.quote(searchTerm.toString().toUpperCase())
     .then(response => {
       console.log(response);
-      // console.log(response['Time Series (Daily)']);
-
-      // Get todays most recent price
-      // var d = new Date();
-      //
-      // var date = `${d.getFullYear()}-${("0" + d.getMonth()).slice(-2)}-${("0" + d.getDay()).slice(-2)}`;
-      // date = "2019-08-02"; // Todo remove this
-      // console.log(date);
 
       // var stockData = response['Time Series (Daily)'][date];
       var stockData = response['Global Quote'];
@@ -70,17 +80,7 @@ class App extends React.Component{
 
   render(){
     console.log("Render app", this.state.data);
-    // console.log(this.state.data)
-    // var card;
-    // card = this.state.data === {} ? '' : this.state.data;
-    // var x = this.state.data.map((obj) => {
-    //   <Card name={obj.name}
-    //         open={obj.open}
-    //         high={obj.high}
-    //         low={obj.low}
-    //         price={obj.price}/>
-    // });
-    // console.log("X", x);
+
     return(
       <div>
         <Paper className='search-bar'>
