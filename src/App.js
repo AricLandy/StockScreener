@@ -22,12 +22,7 @@ class App extends React.Component{
     this.getValues = this.getValues.bind(this);
   }
 
-  // componentDidMount() {
-  // }
-
   validate(term){
-    console.log('validate');
-
     for(var i = 0; i < this.state.data.length; ++i){
       console.log(this.state.data[i].name);
       if (this.state.data[i].name === term.toString().toUpperCase()){
@@ -38,7 +33,6 @@ class App extends React.Component{
   }
 
   getValues(searchTerm){
-    console.log('getvals');
     // Validate the Input
     if (!this.validate(searchTerm)){
       this._toast(`${searchTerm.toUpperCase()} has already been added`);
@@ -49,10 +43,16 @@ class App extends React.Component{
     const alpha = require('alphavantage')({ key: '08Q0YI6I3581QAAU' });
     alpha.data.quote(searchTerm.toString().toUpperCase())
     .then(response => {
-      console.log(response);
 
       // var stockData = response['Time Series (Daily)'][date];
       var stockData = response['Global Quote'];
+
+      // Check if actual data was returned
+      if (!stockData['01. symbol']) {
+         throw new Error("invlid")
+      }
+      
+      // Set the data
       var new_data = this.state.data.concat({
         'name': stockData['01. symbol'],
         'open': stockData['02. open'],
@@ -63,11 +63,11 @@ class App extends React.Component{
       this.setState({
         data: new_data
       })
-      console.log(this.state);
 
     })
-    .catch(err => {
-        console.error(err);
+    .catch((error) => {
+        this._toast("Error");
+        console.log("error", error);
     });
   }
 
@@ -119,7 +119,9 @@ class App extends React.Component{
           rtl={false}
           draggable
           pauseOnHover
-          />
+          >
+          Aric Landy
+          </ ToastContainer>
 
 
       </div>
