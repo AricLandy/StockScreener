@@ -43,13 +43,16 @@ class App extends React.Component{
       num_stocks: 0,
       data: [],
       dialogOpen: false,
+      dialogText: '',
     }
 
-    this.getValues = this.getValues.bind(this);
+    // this.getValues = this.getValues.bind(this);
     this.removeOne = this.removeOne.bind(this);
     this.addStock = this.addStock.bind(this);
+    this.handleAddStock = this.handleAddStock.bind(this);
     this.handleCloseDialog = this.handleCloseDialog.bind(this);
     this.handleOpenDialog = this.handleOpenDialog.bind(this);
+    this.setDialogTextValue = this.setDialogTextValue.bind(this);
 
   }
 
@@ -63,18 +66,20 @@ class App extends React.Component{
     return true;
   }
 
-  getValues(searchTerm){
+
+  addStock(searchTerm){
+    console.log("here");
     alpha.data.quote(searchTerm.toString().toUpperCase())
     .then(response => {
-
+      console.log("got response");
       // var stockData = response['Time Series (Daily)'][date];
       var stockData = response['Global Quote'];
-      console.log("HERE", response);
 
       // Check if actual data was returned
       if (!stockData['01. symbol']) {
          throw new Error("invlid")
       }
+      console.log("check return");
 
       // Validate the Input
       // Validate after to prevent error of pushing enter twice and adding before API returns
@@ -82,6 +87,8 @@ class App extends React.Component{
         this._toast(`${searchTerm.toUpperCase()} has already been added`);
         return;
       }
+
+      console.log("validated");
 
       // Set the data
       var new_data = this.state.data.concat({
@@ -91,9 +98,11 @@ class App extends React.Component{
         'high': stockData['04. low'],
         'price': stockData['05. price']
       });
+      console.log("concat data");
       this.setState({
         data: new_data
-      })
+      });
+      console.log("set state");
 
     })
     .catch((error) => {
@@ -118,8 +127,9 @@ class App extends React.Component{
     });
   }
 
-  addStock(e){
-    console.log("open add dialog");
+  handleAddStock(e){
+    this.addStock(this.state.dialogText);
+    this.handleCloseDialog();
   }
 
   handleOpenDialog(e){
@@ -132,6 +142,12 @@ class App extends React.Component{
     this.setState({
       dialogOpen: false
     })
+  }
+
+  setDialogTextValue(e){
+    this.setState({
+      dialogText: e.target.value
+    });
   }
 
 
@@ -191,14 +207,14 @@ class App extends React.Component{
       <Dialog open={this.state.dialogOpen} onClose={this.handleCloseDialog} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Add New Stock to List</DialogTitle>
         <DialogContent>
-          <TextField autoFocus margin="dense" id="name" label="Symbol" fullWidth/>
+          <TextField onChange={this.setDialogTextValue} autoFocus margin="dense" id="name" label="Symbol" fullWidth/>
         </DialogContent>
 
         <DialogActions>
           <Button onClick={this.handleCloseDialog} >
             Cancel
           </Button>
-          <Button onClick={this.addStock} >
+          <Button onClick={this.handleAddStock} >
             Add
           </Button>
         </DialogActions>
