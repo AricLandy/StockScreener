@@ -13,7 +13,7 @@
   margin-right: 25px;
   margin-top: 12px;
   margin-bottom: 10px;
-  color: indigo;
+  /* color: indigo; */
 }
 .search-input{
   height: 100%;
@@ -37,14 +37,27 @@
   margin-top: auto;
   margin-bottom: auto;
 }
-.price {
+/* .price {
   float: right;
-}
+} */
 
 .toast{
   /* margin-left: 5vw;
   margin-right: 5vw; */
   background: black;
+}
+
+.fab {
+    margin: 0px;
+    top: 80vh;
+    /* right: 0px;
+    bottom: 0px; */
+    left: 80vw;
+    position: fixed;
+};
+
+.delete-icon {
+  cursor: pointer;
 }
 
 @keyframes App-logo-spin {

@@ -1,5 +1,6 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
+import Delete from '@material-ui/icons/DeleteOutlined';
 // import Card from '@material-ui/core/Card';
 import './App.css';
 
@@ -9,22 +10,20 @@ class Card extends React.Component{
     super(props)
     console.log("!!!!!", this.props.data);
 
-    const alpha = require('alphavantage')({ key: '08Q0YI6I3581QAAU' });
-    alpha.data.quote("MSFT").then((response) => {
-      console.log(response);
-    });
+    // const alpha = require('alphavantage')({ key: '08Q0YI6I3581QAAU' });
+    // alpha.data.quote("MSFT").then((response) => {
+    //   console.log(response);
+    // });
 
+    this.fireDelete = this.fireDelete.bind(this);
 
-    // this.state = {
-    //   name: this.props.data
-    //   // data: this.props.name;
-    // }
-    // console.log("CARD", this.state.name, this.props, props)
 
   }
 
-  // componentDidMount() {
-  // }
+
+  fireDelete(e){
+    this.props.onDelete(this.props.index);
+  }
 
 
   render(){
@@ -34,6 +33,8 @@ class Card extends React.Component{
 
           <h3 className='tick'> {this.props.name} </h3>
           <p className='price'>{this.props.price}</p>
+
+          <Delete className='delete-icon' onClick={this.fireDelete}/>
 
         </Paper>
       )
