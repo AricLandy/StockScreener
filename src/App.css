@@ -55,16 +55,34 @@
     left: 80vw;
     position: fixed;
 };
+.stock-wrapper{
+  display: inline-block;
+}
 
 .delete-icon {
   cursor: pointer;
 }
 
-@keyframes App-logo-spin {
+.column {
+  float: left;
+  width: 20%;
+}
+.row{
+  margin-left: 5vw;
+  margin-right: 5vw;
+  height: 50px;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
-}
+} */

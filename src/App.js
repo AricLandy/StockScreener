@@ -42,8 +42,10 @@ class App extends React.Component{
     this.state = {
       num_stocks: 0,
       data: [],
+      displayData: [],
       dialogOpen: false,
       dialogText: '',
+      filterTerm: '',
     }
 
     // this.getValues = this.getValues.bind(this);
@@ -53,7 +55,7 @@ class App extends React.Component{
     this.handleCloseDialog = this.handleCloseDialog.bind(this);
     this.handleOpenDialog = this.handleOpenDialog.bind(this);
     this.setDialogTextValue = this.setDialogTextValue.bind(this);
-
+    this.updateFilter = this.updateFilter.bind(this);
   }
 
   validate(term){
@@ -67,47 +69,37 @@ class App extends React.Component{
   }
 
 
+  // Add a stock to the list
   addStock(searchTerm){
-    console.log("here");
     alpha.data.quote(searchTerm.toString().toUpperCase())
     .then(response => {
-      console.log("got response");
+      console.log(response);
       // var stockData = response['Time Series (Daily)'][date];
       var stockData = response['Global Quote'];
-
       // Check if actual data was returned
       if (!stockData['01. symbol']) {
          throw new Error("invlid")
       }
-      console.log("check return");
-
       // Validate the Input
       // Validate after to prevent error of pushing enter twice and adding before API returns
       if (!this.validate(searchTerm)){
         this._toast(`${searchTerm.toUpperCase()} has already been added`);
         return;
       }
-
-      console.log("validated");
-
       // Set the data
       var new_data = this.state.data.concat({
         'name': stockData['01. symbol'],
-        'open': stockData['02. open'],
-        'close': stockData['03. high'],
-        'high': stockData['04. low'],
-        'price': stockData['05. price']
+        'price': stockData['05. price'],
+        'change': stockData['09. change'],
+        'percentChange': stockData['10. change percent'],
       });
-      console.log("concat data");
       this.setState({
         data: new_data
       });
-      console.log("set state");
-
+      this.updateFilter(this.state.filterTerm);
     })
     .catch((error) => {
         this._toast("Error");
-        console.log("error", error);
     });
   }
 
@@ -125,6 +117,7 @@ class App extends React.Component{
     this.setState({
       data: newData
     });
+    this.updateFilter(this.state.filterTerm);
   }
 
   handleAddStock(e){
@@ -150,6 +143,25 @@ class App extends React.Component{
     });
   }
 
+  updateFilter(filter){
+    this.setState({
+      filterTerm: filter
+    })
+    console.log("filtering");
+    var tempData = [];
+    for(var i = 0; i < this.state.data.length; ++i){
+      console.log(i);
+      if (this.state.data[i].name.includes(filter)){
+        console.log("Adding", this.state.data[i].name);
+        tempData.push(this.state.data[i]);
+      }
+    }
+    this.setState({
+      displayData: tempData
+    });
+    console.log(this.state.displayData);
+  }
+
 
 
 
@@ -160,33 +172,27 @@ class App extends React.Component{
       <MuiThemeProvider theme={theme}>
         <Paper className='search-bar'>
           <InputBase className='search-input'
-            placeholder='Search stocks'
-            onKeyPress={event => {
-              if(event.key === 'Enter') {
-                this.getValues(event.target.value)
-              }
-
-            }}>
-
+            onChange={event => this.updateFilter(event.target.value.toUpperCase())}
+            placeholder='Filter by symbol'>
         </InputBase>
         <SearchIcon className='search-icon' color='primary'/>
 
         </Paper>
+        <Fab onClick={this.handleOpenDialog} className='fab'color="primary" size='medium'>
+            <AddIcon />
+        </Fab>
 
-        {this.state.data.map((obj, index) =>
+        {this.state.displayData.map((obj, index) =>
           (<Card key={obj.id}
                 index={index}
                 name={obj.name}
-                open={obj.open}
-                high={obj.high}
-                low={obj.low}
                 price={obj.price}
+                change={obj.change}
+                percentChange={obj.percentChange}
                 onDelete={this.removeOne}/>),
         )}
 
-        <Fab onClick={this.handleOpenDialog} className='fab' position="bottom-right" color="primary" size='medium'>
-            <AddIcon />
-        </Fab>
+
 
 
         <ToastContainer position="bottom-center"
@@ -204,7 +210,11 @@ class App extends React.Component{
 
 
 
-      <Dialog open={this.state.dialogOpen} onClose={this.handleCloseDialog} aria-labelledby="form-dialog-title">
+      <Dialog open={this.state.dialogOpen} onClose={this.handleCloseDialog} aria-labelledby="form-dialog-title"
+        onKeyPress={event => {
+          if(event.key === 'Enter') {
+            this.handleAddStock();
+          }}}>
         <DialogTitle id="form-dialog-title">Add New Stock to List</DialogTitle>
         <DialogContent>
           <TextField onChange={this.setDialogTextValue} autoFocus margin="dense" id="name" label="Symbol" fullWidth/>
