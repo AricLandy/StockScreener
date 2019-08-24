@@ -30,15 +30,24 @@ class Card extends React.Component{
 
   render(){
     if (this.props.name !== ''){
+      var changeCSS = 'column'
+      if (this.props.change > 0){
+        changeCSS = 'column increase';
+      }
+      else if (this.props.change < 0){
+        changeCSS = 'column decrease';
+      }
       return(
-        <Paper className='row'>
-          <h3 className='column'> {this.props.name} </h3>
+        <div>
+        <div className='row'>
+          <h6 className='column'> {this.props.name}</h6>
           <p className='column'>{this.props.price}</p>
-          <p className='column'>{this.props.change}</p>
-          <p className='column'>{this.props.percentChange}</p>
+          <p className={changeCSS}>{this.props.change}  ( {this.props.percentChange} )</p>
           <ClearIcon className='column delete-icon' onClick={this.fireDelete}/>
 
-        </Paper>
+        </div>
+        <br />
+        </div>
       )
     }
     else {
