@@ -31,10 +31,10 @@ const theme = createMuiTheme({
     danger: 'orange',
   },
 });
-// Todo -- make this an environment variable
+
+// I know my key is visible, it's a free tier so feel free to use it (Lol)
 const alpha = require('alphavantage')({ key: '08Q0YI6I3581QAAU' });
-
-
+const roundTo = require('round-to');
 
 class App extends React.Component{
   constructor(props){
@@ -46,7 +46,7 @@ class App extends React.Component{
       dialogOpen: false,
       dialogText: '',
       filterTerm: '',
-    }
+    };
 
     // this.getValues = this.getValues.bind(this);
     this.removeOne = this.removeOne.bind(this);
@@ -73,7 +73,6 @@ class App extends React.Component{
   addStock(searchTerm){
     alpha.data.quote(searchTerm.toString().toUpperCase())
     .then(response => {
-      console.log(response);
       // var stockData = response['Time Series (Daily)'][date];
       var stockData = response['Global Quote'];
       // Check if actual data was returned
@@ -86,12 +85,13 @@ class App extends React.Component{
         this._toast(`${searchTerm.toUpperCase()} has already been added`);
         return;
       }
+      console.log("HERE", typeof stockData['05. price'])
       // Set the data
       var new_data = this.state.data.concat({
         'name': stockData['01. symbol'],
-        'price': stockData['05. price'],
-        'change': stockData['09. change'],
-        'percentChange': stockData['10. change percent'],
+        'price': roundTo(parseFloat(stockData['05. price']), 2),
+        'change': roundTo(parseFloat(stockData['09. change']), 2),
+        'percentChange': roundTo(parseFloat(stockData['10. change percent']), 2),
       });
       this.setState({
         data: new_data
@@ -111,7 +111,6 @@ class App extends React.Component{
     })
   }
   removeOne(index){
-    console.log("remove one", this.state.data, index);
     var newData = this.state.data;
     newData.splice(index, 1);
     this.setState({
@@ -147,27 +146,21 @@ class App extends React.Component{
     this.setState({
       filterTerm: filter
     })
-    console.log("filtering");
     var tempData = [];
     for(var i = 0; i < this.state.data.length; ++i){
-      console.log(i);
       if (this.state.data[i].name.includes(filter)){
-        console.log("Adding", this.state.data[i].name);
         tempData.push(this.state.data[i]);
       }
     }
     this.setState({
       displayData: tempData
     });
-    console.log(this.state.displayData);
   }
 
 
 
 
   render(){
-    console.log("Render app", this.state.data);
-
     return(
       <MuiThemeProvider theme={theme}>
         <Paper className='search-bar'>
