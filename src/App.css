@@ -91,12 +91,16 @@
   width: 40%;
 }
 .row{
-  max-width: 500px;
+  /* max-width: 500px;
   margin-left: 5vw;
-  margin-right: 5vw;
-  padding-left: 5%;
+  margin-right: 5vw;*/
+  padding-left: 5%; 
   /* padding-right: 40px; */
   /* height: 60px; */
+}
+.row-wrapper{
+  margin-left: 5vw;
+  margin-right: 5vw;
 }
 .row:after {
   content: "";
@@ -109,6 +113,14 @@
 }
 .bad {
   color: red;
+}
+
+
+.expand-content{
+  padding: 5%;
+}
+.remove-button{
+  
 }
 
 /* @keyframes App-logo-spin {

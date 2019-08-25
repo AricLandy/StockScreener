@@ -13,6 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { createMuiTheme } from '@material-ui/core/styles';
 import indigo from '@material-ui/core/colors/indigo';
 import green from '@material-ui/core/colors/green';
+import red from '@material-ui/core/colors/red';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -25,7 +26,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 const theme = createMuiTheme({
   palette: {
     primary: indigo,
-    secondary: green,
+    secondary: red,
+    red: red,
   },
   status: {
     danger: 'orange',
@@ -85,7 +87,6 @@ class App extends React.Component{
         this._toast(`${searchTerm.toUpperCase()} has already been added`);
         return;
       }
-      console.log("HERE", typeof stockData['05. price'])
       // Set the data
       var new_data = this.state.data.concat({
         'name': stockData['01. symbol'],
@@ -120,6 +121,7 @@ class App extends React.Component{
   }
 
   handleAddStock(e){
+    e.preventDefault();
     this.addStock(this.state.dialogText);
     this.handleCloseDialog();
   }
@@ -208,9 +210,9 @@ class App extends React.Component{
           if(event.key === 'Enter') {
             this.handleAddStock();
           }}}>
-        <DialogTitle id="form-dialog-title">Add New Stock to List</DialogTitle>
+        <DialogTitle id="form-dialog-title">Add New Stock</DialogTitle>
         <DialogContent>
-          <TextField onChange={this.setDialogTextValue} autoFocus margin="dense" id="name" label="Symbol" fullWidth/>
+          <TextField required onChange={this.setDialogTextValue} autoFocus margin="dense" id="name" label="Symbol" />
         </DialogContent>
 
         <DialogActions>

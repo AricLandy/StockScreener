@@ -7,6 +7,9 @@ import ClearIcon from '@material-ui/icons/Clear';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Expand from 'react-expand-animated';
+import Collapsible from 'react-collapsible';
+import Button from '@material-ui/core/Button';
+
 import './App.css';
 
 const alpha = require('alphavantage')({ key: '08Q0YI6I3581QAAU' });
@@ -108,26 +111,33 @@ class Card extends React.Component{
       else if (this.props.change < 0){
         changeCSS = 'column bad change';
       }
+      var row = <div className='row'>
+                  <b className='column ticker'> {this.props.name}</b>
+                  <p className='column price'>${this.props.price}</p>
+                  <p className={changeCSS}>${this.props.change}  ({this.props.percentChange}%)</p>
+                  <ExpandMoreIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.setDropDownOpen}/>
+                </div>;
       return(
         <div>
-        <Paper className='row'>
-          <p className='column ticker'> {this.props.name}</p>
-          <p className='column price'>${this.props.price}</p>
-          <p className={changeCSS}>${this.props.change}  ( {this.props.percentChange}% )</p>
-          
-          <ExpandMoreIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.setDropDownOpen}/>
-
-
-          <Expand open={this.state.openDropDown}>
-            <div>
+        
+        <Paper className='row-wrapper'>
+          <Collapsible trigger={row}>
+            <div className='expand-content'>
               <p>SMA indicator: {this.state.SMAIndicator}</p>
-              <ClearIcon className='column click-icon' onClick={this.fireDelete}/>
-              <br />
-              <ExpandLessIcon className='click-icon' onClick={this.setDropDownClosed}/>
-            </div>
-          </Expand>
+              {/* <ClearIcon className='column click-icon' onClick={this.fireDelete}/> */}
 
+              <Button size='small' className='click-icon' variant="outlined" href={'https://www.google.com/search?tbm=fin&q=NASDAQ:+' + this.props.name}>
+                Google Finance
+              </Button>
+              <Button size='small' className='click-icon remove-button' variant="outlined" color="secondary" onClick={this.fireDelete}>
+                Remove
+              </Button>
+
+            </div> 
+          </Collapsible>
         </Paper>
+
+        
         <br />
         </div>
       )
