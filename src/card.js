@@ -126,10 +126,11 @@ class Card extends React.Component{
               <p>SMA indicator: {this.state.SMAIndicator}</p>
               {/* <ClearIcon className='column click-icon' onClick={this.fireDelete}/> */}
 
-              <Button size='small' className='click-icon' variant="outlined" href={'https://www.google.com/search?tbm=fin&q=NASDAQ:+' + this.props.name}>
+            
+              <Button size='small' className='click-icon dropdown-button' variant="outlined" href={'https://www.google.com/search?tbm=fin&q=NASDAQ:+' + this.props.name}>
                 Google Finance
               </Button>
-              <Button size='small' className='click-icon remove-button' variant="outlined" color="secondary" onClick={this.fireDelete}>
+              <Button size='small' className='click-icon dropdown-button' variant="outlined" color="secondary" onClick={this.fireDelete}>
                 Remove
               </Button>
 

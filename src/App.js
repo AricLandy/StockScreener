@@ -121,7 +121,6 @@ class App extends React.Component{
   }
 
   handleAddStock(e){
-    e.preventDefault();
     this.addStock(this.state.dialogText);
     this.handleCloseDialog();
   }
@@ -173,7 +172,7 @@ class App extends React.Component{
         <SearchIcon className='search-icon' color='primary'/>
 
         </Paper>
-        <Fab onClick={this.handleOpenDialog} className='fab'color="primary" size='medium'>
+        <Fab onClick={this.handleOpenDialog} className='fab' color="primary" size='medium'>
             <AddIcon />
         </Fab>
 
@@ -212,7 +211,7 @@ class App extends React.Component{
           }}}>
         <DialogTitle id="form-dialog-title">Add New Stock</DialogTitle>
         <DialogContent>
-          <TextField required onChange={this.setDialogTextValue} autoFocus margin="dense" id="name" label="Symbol" />
+          <TextField onChange={this.setDialogTextValue} autoFocus margin="dense" id="name" label="Symbol" />
         </DialogContent>
 
         <DialogActions>

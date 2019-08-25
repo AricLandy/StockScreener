@@ -54,7 +54,7 @@
     /* right: 0px;
     bottom: 0px; */
     left: 80vw;
-    position: fixed;
+    position: absolute;
 };
 .stock-wrapper{
   display: inline-block;
@@ -119,8 +119,8 @@
 .expand-content{
   padding: 5%;
 }
-.remove-button{
-  
+.dropdown-button{
+  margin: 20px;
 }
 
 /* @keyframes App-logo-spin {
