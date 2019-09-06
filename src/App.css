@@ -51,11 +51,12 @@
 .fab {
     margin: 0px;
     top: 80vh;
-    /* right: 0px;
-    bottom: 0px; */
     left: 80vw;
-    position: absolute;
+    position: sticky;
 };
+.f {
+  position: sticky;
+}
 .stock-wrapper{
   display: inline-block;
 }
@@ -122,6 +123,7 @@
 .dropdown-button{
   margin: 20px;
 }
+
 
 /* @keyframes App-logo-spin {
   from {

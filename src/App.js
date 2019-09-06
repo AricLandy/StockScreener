@@ -27,14 +27,13 @@ const theme = createMuiTheme({
   palette: {
     primary: indigo,
     secondary: red,
-    red: red,
   },
   status: {
     danger: 'orange',
   },
 });
 
-// I know my key is visible, it's a free tier so feel free to use it (Lol)
+// I know my key is visible, I don't want the user to have to input their own, it's a free tier so feel free to use it (Lol)
 const alpha = require('alphavantage')({ key: '08Q0YI6I3581QAAU' });
 const roundTo = require('round-to');
 
@@ -48,16 +47,23 @@ class App extends React.Component{
       dialogOpen: false,
       dialogText: '',
       filterTerm: '',
+      dialogErrorMessage: '',
+      waitToAdd: [],
     };
 
     // this.getValues = this.getValues.bind(this);
     this.removeOne = this.removeOne.bind(this);
     this.addStock = this.addStock.bind(this);
     this.handleAddStock = this.handleAddStock.bind(this);
+    this.handleAddStockFromButton = this.handleAddStockFromButton.bind(this);
     this.handleCloseDialog = this.handleCloseDialog.bind(this);
     this.handleOpenDialog = this.handleOpenDialog.bind(this);
     this.setDialogTextValue = this.setDialogTextValue.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+  }
+
+  componentDidMount(){
+    // Get the session data from the database
   }
 
   validate(term){
@@ -72,8 +78,9 @@ class App extends React.Component{
 
 
   // Add a stock to the list
-  addStock(searchTerm){
-    alpha.data.quote(searchTerm.toString().toUpperCase())
+  async addStock(searchTerm){
+    console.log("adding stock", searchTerm);
+    return alpha.data.quote(searchTerm.toString().toUpperCase())
     .then(response => {
       // var stockData = response['Time Series (Daily)'][date];
       var stockData = response['Global Quote'];
@@ -84,8 +91,11 @@ class App extends React.Component{
       // Validate the Input
       // Validate after to prevent error of pushing enter twice and adding before API returns
       if (!this.validate(searchTerm)){
-        this._toast(`${searchTerm.toUpperCase()} has already been added`);
-        return;
+        // this._toast(`${searchTerm.toUpperCase()} has already been added`);
+        this.setState({
+          dialogErrorMessage: "This stock has already been added"
+        });
+        return false;
       }
       // Set the data
       var new_data = this.state.data.concat({
@@ -98,9 +108,20 @@ class App extends React.Component{
         data: new_data
       });
       this.updateFilter(this.state.filterTerm);
+      return true;
     })
     .catch((error) => {
-        this._toast("Error");
+      console.log("Returning false");
+      if (error.substring(50, 57) === "Invalid"){
+        this.setState({
+          dialogErrorMessage: 'Invlid symbol'
+        });
+        return false;
+      }
+      this.setState({
+        dialogErrorMessage: "Due to using the free tier, this stock will automatically be added as soon as possible"
+      });
+      return false;
     });
   }
 
@@ -120,9 +141,44 @@ class App extends React.Component{
     this.updateFilter(this.state.filterTerm);
   }
 
-  handleAddStock(e){
-    this.addStock(this.state.dialogText);
-    this.handleCloseDialog();
+  handleAddStockFromButton(e){
+    this.handleAddStock(this.state.dialogText);
+  }
+
+  handleAddStock(symbol){
+    if (symbol){
+      if (this.state.waitToAdd.length > 0){
+        this.addToWaitList(symbol);
+      }
+      else {
+        this.addStock(symbol).then(response => {
+          if (response === true){
+            this.handleCloseDialog();
+          }
+          else if (response === false && this.state.dialogErrorMessage !== 'Invlid symbol'){
+            this.addToWaitList(symbol);
+          }
+        });
+      }
+    }
+  }
+
+  addToWaitList(symbol){
+    console.log("symbol = ", symbol);
+    var temp = this.state.waitToAdd;
+    temp.push(symbol);
+    this.setState({
+      waitToAdd: temp
+    });
+
+    console.log("Set temp to", temp);
+    console.log("adding in ", 60000*(this.state.waitToAdd.length));
+    
+    setTimeout(() => { 
+      console.log("Running", this.state.waitToAdd[0]);
+      this.addStock(this.state.waitToAdd[0]);
+      this.state.waitToAdd.shift();
+    }, 60000*(this.state.waitToAdd.length));
   }
 
   handleOpenDialog(e){
@@ -163,18 +219,19 @@ class App extends React.Component{
 
   render(){
     return(
-      <MuiThemeProvider theme={theme}>
+      <MuiThemeProvider className='f' theme={theme}>
         <Paper className='search-bar'>
           <InputBase className='search-input'
             onChange={event => this.updateFilter(event.target.value.toUpperCase())}
             placeholder='Filter by symbol'>
-        </InputBase>
-        <SearchIcon className='search-icon' color='primary'/>
-
+          </InputBase>
+          <SearchIcon className='search-icon' color='primary'/>
         </Paper>
+
         <Fab onClick={this.handleOpenDialog} className='fab' color="primary" size='medium'>
             <AddIcon />
         </Fab>
+
 
         {this.state.displayData.map((obj, index) =>
           (<Card key={obj.id}
@@ -212,13 +269,16 @@ class App extends React.Component{
         <DialogTitle id="form-dialog-title">Add New Stock</DialogTitle>
         <DialogContent>
           <TextField onChange={this.setDialogTextValue} autoFocus margin="dense" id="name" label="Symbol" />
+          <DialogContentText color='secondary'>
+            {this.state.dialogErrorMessage}
+          </DialogContentText>
         </DialogContent>
 
         <DialogActions>
           <Button onClick={this.handleCloseDialog} >
             Cancel
           </Button>
-          <Button onClick={this.handleAddStock} >
+          <Button onClick={this.handleAddStockFromButton} >
             Add
           </Button>
         </DialogActions>

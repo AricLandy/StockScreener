@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 
 import './App.css';
 
+// I know my key is visible, I don't want the user to have to input their own, it's a free tier so feel free to use it (Lol)
 const alpha = require('alphavantage')({ key: '08Q0YI6I3581QAAU' });
 
 class Card extends React.Component{
@@ -34,8 +35,7 @@ class Card extends React.Component{
 
     this.fireDelete = this.fireDelete.bind(this);
     this.getMovingAverages = this.getMovingAverages.bind(this);
-    this.setDropDownOpen = this.setDropDownOpen.bind(this);
-    this.setDropDownClosed = this.setDropDownClosed.bind(this);
+    this.changeDropDown = this.changeDropDown.bind(this);
 
   }
 
@@ -51,13 +51,14 @@ class Card extends React.Component{
       this.setState({
         SMA50: formattedSMA
       });
+      console.log("50",this.state.SMA50);
     })
     .catch(error => {
       console.log(error);
     });
 
     // Get the 200 day SMA
-    fetch(`https://www.alphavantage.co/query?function=SMA&symbol=${this.props.name}&interval=daily&time_period=200&series_type=open&apikey=${alpha}`).then((response) => {
+    return fetch(`https://www.alphavantage.co/query?function=SMA&symbol=${this.props.name}&interval=daily&time_period=200&series_type=open&apikey=${alpha}`).then((response) => {
       return response.json();
     })
     .then(data => {
@@ -78,7 +79,6 @@ class Card extends React.Component{
       SMAIndicator: temp
     });
     console.log("SET DATA");
-
   }
 
 
@@ -86,14 +86,13 @@ class Card extends React.Component{
     this.props.onDelete(this.props.index);
   }
 
-  setDropDownOpen(){
+  changeDropDown(){
+    var temp = true;
+    if (this.state.openDropDown === true){
+      temp = false;
+    }
     this.setState({
-      openDropDown: true
-    })
-  }
-  setDropDownClosed(){
-    this.setState({
-      openDropDown: false
+      openDropDown: temp
     })
   }
 
@@ -111,11 +110,13 @@ class Card extends React.Component{
       else if (this.props.change < 0){
         changeCSS = 'column bad change';
       }
-      var row = <div className='row'>
+      console.log("Render", this.state.openDropDown);
+      var expand_icon =  this.state.openDropDown === true ? <ExpandLessIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.changeDropDown}/> : <ExpandMoreIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.changeDropDown}/> ;
+      var row = <div className='row' onClick={this.changeDropDown}>
                   <b className='column ticker'> {this.props.name}</b>
                   <p className='column price'>${this.props.price}</p>
                   <p className={changeCSS}>${this.props.change}  ({this.props.percentChange}%)</p>
-                  <ExpandMoreIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.setDropDownOpen}/>
+                  {expand_icon}
                 </div>;
       return(
         <div>
