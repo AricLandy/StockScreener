@@ -23,6 +23,8 @@ class Card extends React.Component{
       SMA200: 0,
       SMAIndicator: '',
       openDropDown: false,
+      hist50: [],
+      hist200: []
     };
 
     if (this.props.name !== ''){
@@ -48,8 +50,11 @@ class Card extends React.Component{
       var movingAvgs = data['Technical Analysis: SMA'];
       var currentSMA = movingAvgs[Object.keys(data['Technical Analysis: SMA'])[0]];
       var formattedSMA = currentSMA['SMA'];
+      var histData = []
+      histData.push(movingAvgs[Object.keys(data['Technical Analysis: SMA'])[10]], movingAvgs[Object.keys(data['Technical Analysis: SMA'])[20]], movingAvgs[Object.keys(data['Technical Analysis: SMA'])[30]]);
       this.setState({
-        SMA50: formattedSMA
+        SMA50: formattedSMA,
+        hist50: histData
       });
       console.log("50",this.state.SMA50);
     })
@@ -62,9 +67,15 @@ class Card extends React.Component{
       return response.json();
     })
     .then(data => {
-      var price200 = data['Technical Analysis: SMA'][Object.keys(data['Technical Analysis: SMA'])[0]]['SMA'];
+      // var price200 = data['Technical Analysis: SMA'][Object.keys(data['Technical Analysis: SMA'])[0]]['SMA'];
+      var movingAvgs = data['Technical Analysis: SMA'];
+      var currentSMA = movingAvgs[Object.keys(data['Technical Analysis: SMA'])[0]];
+      var formattedSMA = currentSMA['SMA'];
+      var histData = []
+      histData.push(movingAvgs[Object.keys(data['Technical Analysis: SMA'])[10]], movingAvgs[Object.keys(data['Technical Analysis: SMA'])[20]], movingAvgs[Object.keys(data['Technical Analysis: SMA'])[30]]);
       this.setState({
-        SMA200: price200
+        SMA200: formattedSMA,
+        hist200: histData
       });
       console.log("200",this.state.SMA200);
     })
@@ -74,11 +85,46 @@ class Card extends React.Component{
   }
 
   setSMAIndicator(){
-    var temp = this.state.SMA50 > this.state.SMA200 ? 'BUY' : 'SELL';
+    var hist = this.histLower();
+    console.log('hist', hist);
+    var curr = this.state.SMA50 > this.state.SMA200;
+    var temp = 'Hold'
+    // 50 just went above 200
+    if (hist === 200 && curr === true){
+      temp = 'BUY';
+    }
+    // 50 just went below 200
+    else if (hist === 50 && curr === false){
+      temp = 'SELL';
+    }
+    console.log('temp', temp);
     this.setState({
       SMAIndicator: temp
     });
-    console.log("SET DATA");
+  }
+
+  histLower(){
+    console.log('200');
+    console.log(this.state.hist200);
+    console.log('50');
+    console.log(this.state.hist50);
+    var result = 0;
+    for (var i = 0; i < this.state.hist200.length; ++i){
+      if (this.state.hist200 < this.state.hist50){
+        ++result;
+      }
+      else{
+        --result;
+      }
+    }
+    console.log('result', result);
+    if (result === this.state.hist200.length){
+      return 200;
+    }
+    if (result === -1*this.state.hist200.length){
+      return 50;
+    }
+    return 0;
   }
 
 
@@ -103,19 +149,23 @@ class Card extends React.Component{
       if (this.state.openDropDown){
         hideExpandIcon = 'hide-icon';
       }
-      var changeCSS = 'column'
+      var changeCSS = 'column';
+      var change = '';
       if (this.props.change > 0){
         changeCSS = 'column good change';
+        change = '+';
       }
       else if (this.props.change < 0){
         changeCSS = 'column bad change';
+        change = '-';
       }
       console.log("Render", this.state.openDropDown);
       var expand_icon =  this.state.openDropDown === true ? <ExpandLessIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.changeDropDown}/> : <ExpandMoreIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.changeDropDown}/> ;
       var row = <div className='row' onClick={this.changeDropDown}>
                   <b className='column ticker'> {this.props.name}</b>
                   <p className='column price'>${this.props.price}</p>
-                  <p className={changeCSS}>${this.props.change}  ({this.props.percentChange}%)</p>
+                  <p className={changeCSS}>{change}{this.props.change}</p>
+                  <p className={changeCSS}>{this.props.percentChange}%</p>
                   {expand_icon}
                 </div>;
       return(
@@ -131,6 +181,7 @@ class Card extends React.Component{
               <Button size='small' className='click-icon dropdown-button' variant="outlined" href={'https://www.google.com/search?tbm=fin&q=NASDAQ:+' + this.props.name}>
                 Google Finance
               </Button>
+              &nbsp;&nbsp;&nbsp;
               <Button size='small' className='click-icon dropdown-button' variant="outlined" color="secondary" onClick={this.fireDelete}>
                 Remove
               </Button>

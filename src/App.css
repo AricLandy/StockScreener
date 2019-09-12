@@ -1,19 +1,19 @@
 
 .search-bar {
   margin-top: 12px;
-  margin-left: 5vw;
-  margin-right: 5vw;
-  height: 50px;
+  margin-left: 15vw;
+  margin-right: 15vw;
+  height: 60px;
   display: 'flex';
   align-items: 'center';
-  max-width: 500px;
-  /* width: 80vw; */
+  /* max-width: 500px; */
+  width: 70vw;
 }
 .search-icon {
   float: right;
   margin-right: 25px;
-  margin-top: 12px;
-  margin-bottom: 10px;
+  margin-top: 18px;
+  margin-bottom: 15px;
   /* color: indigo; */
 }
 .search-input{
@@ -26,8 +26,9 @@
 
 .card {
   margin-top: 10px;
-  margin-left: 5vw;
-  margin-right: 5vw;
+  margin-left: 10vw;
+  margin-right: 10vw;
+  width: 80vw;
   padding: 2%;
   display: flex;
   align: horizontal;
@@ -70,26 +71,26 @@
   margin-top: 26px;
   margin-bottom: 20px;
   font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
+  font-size: 16px;
 }
 .hide-icon{
   visibility: hidden;
 }
 .drop-icon {
-  width: 30%;
-  padding-right: 10px;
+  width: 10%;
+  /* padding-right: 2%; */
 }
 .ticker{
-  width: 20%;
+  width: 45%;
   font-weight: 1px;
+  font-size: 18px;
 }
 .price{
-  width: 20%;
+  width: 17%;
 }
 .change{
-  padding-left: 15px;
   align-content: center;
-  width: 40%;
+  width: 15%;
 }
 .row{
   /* max-width: 500px;
@@ -100,8 +101,9 @@
   /* height: 60px; */
 }
 .row-wrapper{
-  margin-left: 5vw;
-  margin-right: 5vw;
+  margin-left: 15vw;
+  margin-right: 15vw;
+  width: 70vw;
 }
 .row:after {
   content: "";

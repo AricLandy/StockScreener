@@ -119,7 +119,7 @@ class App extends React.Component{
         return false;
       }
       this.setState({
-        dialogErrorMessage: "Due to using the free tier, this stock will automatically be added as soon as possible"
+        dialogErrorMessage: "Due to using free stock data, this security will automatically be added as soon as possible"
       });
       return false;
     });
@@ -172,7 +172,7 @@ class App extends React.Component{
     });
 
     console.log("Set temp to", temp);
-    console.log("adding in ", 60000*(this.state.waitToAdd.length));
+    console.log("adding in ", 60000*(Math.round(this.state.waitToAdd.length / 2)));
     
     setTimeout(() => { 
       console.log("Running", this.state.waitToAdd[0]);
@@ -189,7 +189,8 @@ class App extends React.Component{
 
   handleCloseDialog(e){
     this.setState({
-      dialogOpen: false
+      dialogOpen: false,
+      dialogErrorMessage: ''
     })
   }
 
@@ -244,8 +245,6 @@ class App extends React.Component{
         )}
 
 
-
-
         <ToastContainer position="bottom-center"
           autoClose={5000}
           hideProgressBar={true}
@@ -258,8 +257,6 @@ class App extends React.Component{
           >
           Aric Landy
           </ ToastContainer>
-
-
 
       <Dialog open={this.state.dialogOpen} onClose={this.handleCloseDialog} aria-labelledby="form-dialog-title"
         onKeyPress={event => {
