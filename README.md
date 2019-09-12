@@ -1,6 +1,6 @@
 # Stock Screaner with Algorithmic Predictions
 
-![Example Image](https://github.com/AricLandy/StockScreener/blob/master/Demo_image.png)
+![Example Image](https://github.com/AricLandy/StockScreener/blob/master/Demo_image.png =250x)
 
 ### How it works
 The basics of how this app works are very simple. When the user enters the name of a NASDAQ exchange, a request is made to an Alphavantage API to gett the current price and daily change. These results are then used to initialize a card companent (card.js) and the results are displayed. On initialization of a card component, another request is made to Alphavantage to get the historical 200 day and 50 day simple moving average for that exchange. This data is used for the SMA prediction which is explained below.
