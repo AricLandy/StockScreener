@@ -157,7 +157,7 @@ class Card extends React.Component{
       }
       else if (this.props.change < 0){
         changeCSS = 'column bad change';
-        change = '-';
+        change = ' - ';
       }
       console.log("Render", this.state.openDropDown);
       var expand_icon =  this.state.openDropDown === true ? <ExpandLessIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.changeDropDown}/> : <ExpandMoreIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.changeDropDown}/> ;
