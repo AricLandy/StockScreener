@@ -119,7 +119,7 @@ class App extends React.Component{
         return false;
       }
       this.setState({
-        dialogErrorMessage: "Due to using free stock data, this security will automatically be added as soon as possible"
+        dialogErrorMessage: "Due to using free data, this security will automatically be added as soon as possible"
       });
       return false;
     });
