@@ -100,9 +100,9 @@ class App extends React.Component{
       // Set the data
       var new_data = this.state.data.concat({
         'name': stockData['01. symbol'],
-        'price': roundTo(parseFloat(stockData['05. price']), 2),
-        'change': roundTo(parseFloat(stockData['09. change']), 2),
-        'percentChange': roundTo(parseFloat(stockData['10. change percent']), 2),
+        'price': parseFloat(stockData['05. price']),
+        'change': parseFloat(stockData['09. change']),
+        'percentChange': parseFloat(stockData['10. change percent']),
       });
       this.setState({
         data: new_data
@@ -111,7 +111,7 @@ class App extends React.Component{
       return true;
     })
     .catch((error) => {
-      console.log("Returning false");
+      // console.log("Returning false");
       if (error.substring(50, 57) === "Invalid"){
         this.setState({
           dialogErrorMessage: 'Invlid symbol'

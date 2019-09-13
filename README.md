@@ -1,6 +1,6 @@
 # Stock Screaner with Algorithmic Predictions
 
-![Example Image](https://github.com/AricLandy/StockScreener/blob/master/Demo_image.png | width=100)
+![Example Image](https://github.com/AricLandy/StockScreener/blob/master/Demo_image.png)
 
 ### How it works
 The basics of how this app works are very simple. When the user enters the name of a NASDAQ exchange, a request is made to an Alphavantage API to gett the current price and daily change. These results are then used to initialize a card companent (card.js) and the results are displayed. On initialization of a card component, another request is made to Alphavantage to get the historical 200 day and 50 day simple moving average for that exchange. This data is used for the SMA prediction which is explained below.
@@ -18,3 +18,7 @@ Obviously this isn't a perfect practice and neither is the implementation. If th
 
 ### Free tier API 
 Unfortunately I cannot get free information about all NASDAQ exchanges. I chose use the free tier Alphavantage API during so I am not accidently changed for a bug that makes millions of request lol. That being said, when the program recognizes a request limit is displays the message "Due to using free data, this security will automatically be added as soon as possible". The program sets a timeout on the request to what it predicts will be when the request limit ends. You can add as many as you want to this "waiting list" and the timeout will set accordingly.
+
+### Further Expansion
+1. Automatically update stocks - due to using a free API this would be a little complicated but I could create a request queue for all requests from the app to acomplish this and organize all of the requests better.
+2. Save data for users - This could be done using sessions on the front end to simply save state or more professionally I could connect the app to a database on the backend

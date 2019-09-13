@@ -27,21 +27,14 @@ class Card extends React.Component{
       hist200: []
     };
 
-    if (this.props.name !== ''){
-      console.log("Getting data");
-      this.getMovingAverages()
-      .then(() => {
-        this.setSMAIndicator();
-      })
-    }
-
     this.fireDelete = this.fireDelete.bind(this);
-    this.getMovingAverages = this.getMovingAverages.bind(this);
+    this.get50SMA = this.get50SMA.bind(this);
+    this.get200SMA = this.get200SMA.bind(this);
     this.changeDropDown = this.changeDropDown.bind(this);
 
   }
 
-  async getMovingAverages(){
+  get50SMA(){
     // Get the 50 day SMA
     fetch(`https://www.alphavantage.co/query?function=SMA&symbol=${this.props.name}&interval=daily&time_period=50&series_type=open&apikey=${alpha}`).then((response) => {
       return response.json();
@@ -61,12 +54,15 @@ class Card extends React.Component{
     .catch(error => {
       console.log(error);
     });
-
+  }
+  get200SMA(){
     // Get the 200 day SMA
-    return fetch(`https://www.alphavantage.co/query?function=SMA&symbol=${this.props.name}&interval=daily&time_period=200&series_type=open&apikey=${alpha}`).then((response) => {
+    fetch(`https://www.alphavantage.co/query?function=SMA&symbol=${this.props.name}&interval=daily&time_period=200&series_type=open&apikey=${alpha}`).then((response) => {
+      console.log('response', response);
       return response.json();
     })
     .then(data => {
+      console.log('data', data);
       // var price200 = data['Technical Analysis: SMA'][Object.keys(data['Technical Analysis: SMA'])[0]]['SMA'];
       var movingAvgs = data['Technical Analysis: SMA'];
       var currentSMA = movingAvgs[Object.keys(data['Technical Analysis: SMA'])[0]];
@@ -142,8 +138,25 @@ class Card extends React.Component{
     })
   }
 
+  // Get the prediction data
+  componentDidMount(){
+     if (this.props.name !== ''){
+      // console.log("Getting data");
+      this.get50SMA();
+      this.get200SMA();
+      // Have to get values from SMAs before setting the indicator at all
+      this.setSMAIndicator();
+    }
+  }
+
 
   render(){
+   
+    console.log("rendering");
+    console.log(this.state.hist200);
+    console.log(this.state.hist50);
+    console.log('done');
+
     if (this.props.name !== ''){
       var hideExpandIcon = ''
       if (this.state.openDropDown){
@@ -157,15 +170,14 @@ class Card extends React.Component{
       }
       else if (this.props.change < 0){
         changeCSS = 'column bad change';
-        change = ' - ';
       }
-      console.log("Render", this.state.openDropDown);
+      // console.log("Render", this.state.openDropDown);
       var expand_icon =  this.state.openDropDown === true ? <ExpandLessIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.changeDropDown}/> : <ExpandMoreIcon className={'click-icon column drop-icon' + hideExpandIcon} onClick={this.changeDropDown}/> ;
       var row = <div className='row' onClick={this.changeDropDown}>
                   <b className='column ticker'> {this.props.name}</b>
-                  <p className='column price'>${this.props.price}</p>
-                  <p className={changeCSS}>{change}{this.props.change}</p>
-                  <p className={changeCSS}>{this.props.percentChange}%</p>
+                  <p className='column price'>${this.props.price.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                  <p className={changeCSS}>{change}{this.props.change.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                  <p className={changeCSS}>{change}{this.props.percentChange.toFixed(2)}%</p>
                   {expand_icon}
                 </div>;
       return(
@@ -174,10 +186,8 @@ class Card extends React.Component{
         <Paper className='row-wrapper'>
           <Collapsible trigger={row}>
             <div className='expand-content'>
-              <p>SMA indicator: {this.state.SMAIndicator}</p>
+              <p>SMA indicator (50 day and 200 day): {this.state.SMAIndicator}</p>
               {/* <ClearIcon className='column click-icon' onClick={this.fireDelete}/> */}
-
-            
               <Button size='small' className='click-icon dropdown-button' variant="outlined" href={'https://www.google.com/search?tbm=fin&q=NASDAQ:+' + this.props.name}>
                 Google Finance
               </Button>
