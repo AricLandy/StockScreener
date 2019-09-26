@@ -86,7 +86,7 @@ class App extends React.Component{
       var stockData = response['Global Quote'];
       // Check if actual data was returned
       if (!stockData['01. symbol']) {
-         throw new Error("invlid")
+         throw new Error("invalid")
       }
       // Validate the Input
       // Validate after to prevent error of pushing enter twice and adding before API returns
